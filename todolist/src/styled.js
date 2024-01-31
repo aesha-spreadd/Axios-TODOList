@@ -28,7 +28,8 @@ export const InputField = styled.input`
   margin: 0;
   border: 2px solid #5f6368;
   background: #202124;
-  min-width: 280px;
+  max-width: 480px;
+  width: 100%;
   border-radius: 8px;
   color: #fff;
   float: left;
@@ -84,6 +85,8 @@ export const ButtonWrapper = styled.div`
 
 export const Update = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const InputFieldUpdate = styled.input`
@@ -95,7 +98,7 @@ export const InputFieldUpdate = styled.input`
   margin: 0;
   border: 2px solid #5f6368;
   background: #202124;
-  min-width: 360px;
+  max-width: 460px;
   width: 100%;
   border-radius: 8px;
   color: #fff;
