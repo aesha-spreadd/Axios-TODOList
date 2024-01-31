@@ -20,9 +20,9 @@ export const TodoListWrapper = styled.div`
 `;
 
 export const InputField = styled.input`
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 500;
-  line-height: 1.5rem;
+  line-height: 24px;
   letter-spacing: 0.00625em;
   padding: 5px;
   margin: 0;
@@ -87,9 +87,9 @@ export const Update = styled.div`
 `;
 
 export const InputFieldUpdate = styled.input`
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 500;
-  line-height: 1.5rem;
+  line-height: 24px;
   letter-spacing: 0.00625em;
   padding: 5px;
   margin: 0;
