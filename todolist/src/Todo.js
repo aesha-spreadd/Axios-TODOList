@@ -62,7 +62,6 @@ const Todo = () => {
       }
       return checklist;
     });
-
     setChecklists(updatedChecklists);
   };
 
@@ -73,7 +72,6 @@ const Todo = () => {
   ) => {
     try {
       setUpdating(true);
-
       const updatedChecklists = checklists.map((checklist) => {
         if (checklist.id === checklistId) {
           const updatedItems = checklist.items.map((item) =>
@@ -83,11 +81,9 @@ const Todo = () => {
         }
         return checklist;
       });
-
       await axios.put(`http://localhost:3002/checklists/${checklistId}`, {
         items: updatedChecklists.find((c) => c.id === checklistId).items,
       });
-
       setChecklists(updatedChecklists);
       setUpdating(false);
       setUpdatingItemId(null);
@@ -126,7 +122,6 @@ const Todo = () => {
         title: newTodo,
         completed: false,
       });
-
       setTodos((prevTodos) => [...prevTodos, response.data]);
       setNewTodo('');
     } catch (error) {
@@ -153,7 +148,6 @@ const Todo = () => {
           completed: false,
         })),
       });
-
       setChecklists((prevChecklists) => [...prevChecklists, response.data]);
       setNewChecklist('');
       setNewChecklistItems('');
@@ -165,21 +159,15 @@ const Todo = () => {
   const handleChecklistClick = () => {
     const title = newChecklist;
     const items = newChecklistItems.split(',').map((item) => item.trim());
-
     addChecklist(title, items);
   };
-
   const deleteTodo = async (id) => {
     try {
       const deletedTodo = todos.find((todo) => todo.id === id);
-
       await axios.delete(`http://localhost:3002/todos/${id}`);
       console.log(`Todo with id ${id} deleted successfully.`);
-
       setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
-
       await axios.post('http://localhost:3002/deletedTodos', deletedTodo);
-
       setDeletedChecklist((prevDeletedChecklists) => [
         ...prevDeletedChecklists,
         deletedTodo,
@@ -194,21 +182,16 @@ const Todo = () => {
       const deletedChecklist = checklists.find(
         (checklist) => checklist.id === id
       );
-
       console.log('Deleted Checklist:', deletedChecklist);
-
       await axios.delete(`http://localhost:3002/checklists/${id}`);
       console.log(`Checklist with id ${id} deleted successfully.`);
-
       setChecklists((prevChecklists) =>
         prevChecklists.filter((checklist) => checklist.id !== id)
       );
-
       await axios.post(
         'http://localhost:3002/deletedChecklists',
         deletedChecklist
       );
-
       setDeletedChecklist((prevDeletedChecklists) => [
         ...prevDeletedChecklists,
         deletedChecklist,
@@ -229,19 +212,15 @@ const Todo = () => {
         }
         return checklist;
       });
-
       const itemToUpdate = updatedChecklists
         .find((c) => c.id === checklistId)
         .items.find((item) => item.id === itemId);
-
       await axios.put(`http://localhost:3002/checklists/${checklistId}`, {
         items: updatedChecklists.find((c) => c.id === checklistId).items,
       });
-
       setCompletedCount((prevCount) =>
         itemToUpdate.completed ? prevCount - 1 : prevCount + 1
       );
-
       setChecklists(updatedChecklists);
     } catch (error) {
       console.error('Error updating checklist item:', error);
@@ -253,17 +232,13 @@ const Todo = () => {
       const itemToUpdate = isChecklist
         ? checklists.find((item) => item.id === id)
         : todos.find((item) => item.id === id);
-
       const updatedItem = isChecklist
         ? { id, title: updatedTitle, items: itemToUpdate.items }
         : { id, title: updatedTitle, completed: itemToUpdate.completed };
-
       const endpoint = isChecklist
         ? `http://localhost:3002/checklists/${id}`
         : `http://localhost:3002/todos/${id}`;
-
       await axios.put(endpoint, updatedItem);
-
       if (isChecklist) {
         setChecklists((prevItems) =>
           prevItems.map((item) => (item.id === id ? updatedItem : item))
@@ -273,7 +248,6 @@ const Todo = () => {
           prevItems.map((item) => (item.id === id ? updatedItem : item))
         );
       }
-
       setPrevMessages((prev) => ({ ...prev, [id]: updatedTitle }));
       setUpdateId(null);
       setUpdatedTitle('');
@@ -288,24 +262,20 @@ const Todo = () => {
       const titleToUpdate = checklists.find(
         (checklist) => checklist.id === titleId
       );
-
       const newItem = {
         id: uniqueId(),
         title: newTitle,
         completed: false,
       };
-
       const updatedTitle = {
         ...titleToUpdate,
         items: [...titleToUpdate.items, newItem],
       };
-
       setChecklists((prevChecklists) =>
         prevChecklists.map((checklist) =>
           checklist.id === titleId ? updatedTitle : checklist
         )
       );
-
       await axios.put(
         `http://localhost:3002/checklists/${titleId}`,
         updatedTitle
@@ -319,7 +289,6 @@ const Todo = () => {
       console.error('Error adding item:', error);
     }
   };
-
   return (
     <Container>
       <H1>ToDo List</H1>
@@ -351,7 +320,6 @@ const Todo = () => {
           </Button>
         </CheckLists>
       </TodoListWrapper>
-
       <ul>
         {todos.map((todo) => (
           <TodoItem key={todo.id}>
@@ -394,7 +362,6 @@ const Todo = () => {
             )}
           </TodoItem>
         ))}
-
         {checklists?.map((checklist) => (
           <TodoItem key={checklist.id}>
             {updateId === checklist.id ? (
@@ -425,7 +392,6 @@ const Todo = () => {
                             toggleItemCheckbox(checklist.id, item.id)
                           }
                         />
-
                         {item.completed ? (
                           <span style={{ textDecoration: 'line-through' }}>
                             {item.title}
@@ -449,7 +415,6 @@ const Todo = () => {
                       />
                     </div>
                   ))}
-
                   {addingItemToChecklist === checklist.id ? (
                     <div>
                       <InputFieldUpdate
