@@ -1,0 +1,178 @@
+{
+  "todos": [
+    {
+      "id": "509c",
+      "title": "12x",
+      "completed": false
+    },
+    {
+      "id": "95d9",
+      "title": "",
+      "completed": false
+    },
+    {
+      "id": "7165",
+      "title": "12wdxz",
+      "completed": false
+    }
+  ],
+  "deletedTodos": [
+    {
+      "id": "b392",
+      "title": "aesha",
+      "completed": false
+    },
+    {
+      "id": "df39",
+      "title": "eds32",
+      "completed": false
+    },
+    {
+      "id": "810f",
+      "title": "1234567890",
+      "completed": false
+    },
+    {
+      "id": "b662",
+      "title": "dxfrgt",
+      "completed": false
+    }
+  ],
+  "checklists": [
+    {
+      "items": [
+        {
+          "id": "_rprdj4bl9",
+          "title": "123xs",
+          "completed": true
+        },
+        {
+          "id": "_7afbflof2",
+          "title": "task2",
+          "completed": true
+        },
+        {
+          "id": "_wan0h7glr",
+          "title": "task3",
+          "completed": true
+        },
+        {
+          "id": "_84z30g2xo",
+          "completed": false,
+          "title": "esdxc"
+        },
+        {
+          "id": "_z0wgwgfjw",
+          "completed": false
+        }
+      ],
+      "id": "7fa3"
+    },
+    {
+      "id": "9af4",
+      "title": "wsdc",
+      "items": [
+        {
+          "id": "_55nnwywga",
+          "title": "",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "id": "96fd",
+      "title": "sdf",
+      "items": [
+        {
+          "id": "_il1142c2g",
+          "title": "",
+          "completed": false
+        }
+      ]
+    }
+  ],
+  "deletedChecklists": [
+    {
+      "id": "0006",
+      "items": [
+        {
+          "id": "_h7ug38vmu",
+          "title": "css",
+          "completed": true
+        },
+        {
+          "id": "_e2yuacjna",
+          "title": "html",
+          "completed": true
+        },
+        {
+          "id": "_ko0tgvvfc",
+          "title": "js",
+          "completed": false
+        },
+        {
+          "id": "_ya3gimczm",
+          "title": "",
+          "completed": false
+        },
+        {
+          "id": "_14o7qfze5",
+          "title": "1234",
+          "completed": false
+        },
+        {
+          "id": "_yxwv4odl6",
+          "title": "1235",
+          "completed": false
+        },
+        {
+          "id": "_4obmm0j05",
+          "title": "1we",
+          "completed": true
+        }
+      ]
+    },
+    {
+      "id": "3d06",
+      "items": [
+        {
+          "id": "_mtfb5va2s",
+          "title": "",
+          "completed": true
+        },
+        {
+          "id": "_zrgwlvwdk",
+          "title": "",
+          "completed": true
+        },
+        {
+          "id": "_4b5o5sqpm",
+          "title": "",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "id": "230d",
+      "title": "",
+      "items": [
+        {
+          "id": "_5eo8ynxy3",
+          "title": "",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "id": "870f",
+      "title": "",
+      "items": [
+        {
+          "id": "_65ejdy8ez",
+          "title": "",
+          "completed": false
+        }
+      ]
+    }
+  ]
+}
