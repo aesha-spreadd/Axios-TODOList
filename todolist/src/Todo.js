@@ -12,15 +12,27 @@ import {
   Update,
   InputFieldUpdate,
   CheckLists,
+  TodoListUl,
+  ButtonsdeleteWrapper,
+  ChecklistTitle,
+  CompletedTask,
+  ChecklistButton,
+  NotesField,
+  TodoItemText,
+  CheckListData,
 } from './styled';
+import { MdAdd } from 'react-icons/md';
 import { IoAdd } from 'react-icons/io5';
 import { FaRegSave } from 'react-icons/fa';
 import { GrChapterPrevious, GrUpdate } from 'react-icons/gr';
 import { MdDelete } from 'react-icons/md';
+import { IoIosCheckbox } from 'react-icons/io';
+import { MdEdit } from 'react-icons/md';
 
 const Todo = () => {
   const uniqueId = () => '_' + Math.random().toString(36).substr(2, 9);
   const [updatingItemId, setUpdatingItemId] = useState(null);
+  const [showChecklistInput, setShowChecklistInput] = useState(false);
   const [updatedItemTitle, setUpdatedItemTitle] = useState('');
   const [newChecklistItems, setNewChecklistItems] = useState('');
   const [todos, setTodos] = useState([]);
@@ -52,6 +64,10 @@ const Todo = () => {
     setCompletedTasksCount(updatedCompletedTasksCount);
   }, [checklists]);
 
+  const handleChecklistIconClick = () => {
+    setShowChecklistInput((prev) => !prev);
+  };
+
   const handleUpdateChecklistItemUI = (checklistId, itemId, updatedTitle) => {
     const updatedChecklists = checklists.map((checklist) => {
       if (checklist.id === checklistId) {
@@ -62,6 +78,7 @@ const Todo = () => {
       }
       return checklist;
     });
+
     setChecklists(updatedChecklists);
   };
 
@@ -72,6 +89,7 @@ const Todo = () => {
   ) => {
     try {
       setUpdating(true);
+
       const updatedChecklists = checklists.map((checklist) => {
         if (checklist.id === checklistId) {
           const updatedItems = checklist.items.map((item) =>
@@ -81,9 +99,11 @@ const Todo = () => {
         }
         return checklist;
       });
+
       await axios.put(`http://localhost:3002/checklists/${checklistId}`, {
         items: updatedChecklists.find((c) => c.id === checklistId).items,
       });
+
       setChecklists(updatedChecklists);
       setUpdating(false);
       setUpdatingItemId(null);
@@ -118,12 +138,19 @@ const Todo = () => {
 
   const addTodo = async () => {
     try {
+      if (newTodo.trim() === '') {
+        alert('Todo title cannot be empty');
+        return;
+      }
+
       const response = await axios.post('http://localhost:3002/todos', {
         title: newTodo,
         completed: false,
       });
+
       setTodos((prevTodos) => [...prevTodos, response.data]);
       setNewTodo('');
+      console.log(newTodo);
     } catch (error) {
       console.error('Error adding todo:', error);
     }
@@ -148,6 +175,7 @@ const Todo = () => {
           completed: false,
         })),
       });
+
       setChecklists((prevChecklists) => [...prevChecklists, response.data]);
       setNewChecklist('');
       setNewChecklistItems('');
@@ -157,17 +185,33 @@ const Todo = () => {
   };
 
   const handleChecklistClick = () => {
-    const title = newChecklist;
+    if (newChecklist.trim() === '') {
+      alert('Checklist title cannot be empty');
+      return;
+    }
+
     const items = newChecklistItems.split(',').map((item) => item.trim());
-    addChecklist(title, items);
+
+    if (items.some((item) => item === '')) {
+      alert('Checklist items cannot be empty');
+      return;
+    }
+
+    addChecklist(newChecklist, items);
+    setShowChecklistInput(false);
   };
+
   const deleteTodo = async (id) => {
     try {
       const deletedTodo = todos.find((todo) => todo.id === id);
+
       await axios.delete(`http://localhost:3002/todos/${id}`);
       console.log(`Todo with id ${id} deleted successfully.`);
+
       setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+
       await axios.post('http://localhost:3002/deletedTodos', deletedTodo);
+
       setDeletedChecklist((prevDeletedChecklists) => [
         ...prevDeletedChecklists,
         deletedTodo,
@@ -182,16 +226,21 @@ const Todo = () => {
       const deletedChecklist = checklists.find(
         (checklist) => checklist.id === id
       );
+
       console.log('Deleted Checklist:', deletedChecklist);
+
       await axios.delete(`http://localhost:3002/checklists/${id}`);
       console.log(`Checklist with id ${id} deleted successfully.`);
+
       setChecklists((prevChecklists) =>
         prevChecklists.filter((checklist) => checklist.id !== id)
       );
+
       await axios.post(
         'http://localhost:3002/deletedChecklists',
         deletedChecklist
       );
+
       setDeletedChecklist((prevDeletedChecklists) => [
         ...prevDeletedChecklists,
         deletedChecklist,
@@ -212,15 +261,19 @@ const Todo = () => {
         }
         return checklist;
       });
+
       const itemToUpdate = updatedChecklists
         .find((c) => c.id === checklistId)
         .items.find((item) => item.id === itemId);
+
       await axios.put(`http://localhost:3002/checklists/${checklistId}`, {
         items: updatedChecklists.find((c) => c.id === checklistId).items,
       });
+
       setCompletedCount((prevCount) =>
         itemToUpdate.completed ? prevCount - 1 : prevCount + 1
       );
+
       setChecklists(updatedChecklists);
     } catch (error) {
       console.error('Error updating checklist item:', error);
@@ -232,13 +285,17 @@ const Todo = () => {
       const itemToUpdate = isChecklist
         ? checklists.find((item) => item.id === id)
         : todos.find((item) => item.id === id);
+
       const updatedItem = isChecklist
         ? { id, title: updatedTitle, items: itemToUpdate.items }
         : { id, title: updatedTitle, completed: itemToUpdate.completed };
+
       const endpoint = isChecklist
         ? `http://localhost:3002/checklists/${id}`
         : `http://localhost:3002/todos/${id}`;
+
       await axios.put(endpoint, updatedItem);
+
       if (isChecklist) {
         setChecklists((prevItems) =>
           prevItems.map((item) => (item.id === id ? updatedItem : item))
@@ -248,6 +305,7 @@ const Todo = () => {
           prevItems.map((item) => (item.id === id ? updatedItem : item))
         );
       }
+
       setPrevMessages((prev) => ({ ...prev, [id]: updatedTitle }));
       setUpdateId(null);
       setUpdatedTitle('');
@@ -262,20 +320,24 @@ const Todo = () => {
       const titleToUpdate = checklists.find(
         (checklist) => checklist.id === titleId
       );
+
       const newItem = {
         id: uniqueId(),
         title: newTitle,
         completed: false,
       };
+
       const updatedTitle = {
         ...titleToUpdate,
         items: [...titleToUpdate.items, newItem],
       };
+
       setChecklists((prevChecklists) =>
         prevChecklists.map((checklist) =>
           checklist.id === titleId ? updatedTitle : checklist
         )
       );
+
       await axios.put(
         `http://localhost:3002/checklists/${titleId}`,
         updatedTitle
@@ -289,6 +351,7 @@ const Todo = () => {
       console.error('Error adding item:', error);
     }
   };
+
   return (
     <Container>
       <H1>ToDo List</H1>
@@ -299,28 +362,33 @@ const Todo = () => {
           onChange={(e) => setNewTodo(e.target.value)}
           placeholder="Take a Note....."
         />
-        <Button className="buttonadd" onClick={addTodo}>
-          <IoAdd style={{ width: '30px', height: '30px' }} />
+        <Button>
+          <IoAdd onClick={addTodo} />
         </Button>
-        <CheckLists>
-          <InputField
-            type="text"
-            value={newChecklist}
-            onChange={(e) => setNewChecklist(e.target.value)}
-            placeholder="Add Checklist....."
-          />
-          <InputField
-            type="text"
-            value={newChecklistItems}
-            onChange={(e) => setNewChecklistItems(e.target.value)}
-            placeholder="Add Checklist Items "
-          />
-          <Button className="buttonadd" onClick={handleChecklistClick}>
-            Checklist
-          </Button>
-        </CheckLists>
+        <Button>
+          <IoIosCheckbox onClick={handleChecklistIconClick} />
+        </Button>
+        {showChecklistInput && (
+          <CheckLists>
+            <InputField
+              type="text"
+              value={newChecklist}
+              onChange={(e) => setNewChecklist(e.target.value)}
+              placeholder="Add Checklist....."
+            />
+            <InputField
+              type="text"
+              value={newChecklistItems}
+              onChange={(e) => setNewChecklistItems(e.target.value)}
+              placeholder="Add Checklist Items"
+            />
+            <Button>
+              <IoAdd onClick={handleChecklistClick} />
+            </Button>
+          </CheckLists>
+        )}
       </TodoListWrapper>
-      <ul>
+      <TodoListUl>
         {todos.map((todo) => (
           <TodoItem key={todo.id}>
             {updateId === todo.id ? (
@@ -330,13 +398,13 @@ const Todo = () => {
                   value={updatedTitle}
                   onChange={(e) => setUpdatedTitle(e.target.value)}
                 />
-                <Button className="button" onClick={() => updateTodo(todo.id)}>
-                  <FaRegSave />
+                <Button>
+                  <FaRegSave onClick={() => updateTodo(todo.id)} />
                 </Button>
               </Update>
             ) : (
               <TodoHover>
-                {todo.title}
+                <TodoItemText>{todo.title}</TodoItemText>
                 {prevMessages[todo.id] && (
                   <div>
                     <span className="prviousbutton">
@@ -345,23 +413,18 @@ const Todo = () => {
                   </div>
                 )}
                 <ButtonWrapper>
-                  <Button
-                    className="button"
-                    onClick={() => deleteTodo(todo.id)}
-                  >
-                    <MdDelete />
+                  <Button>
+                    <MdDelete onClick={() => deleteTodo(todo.id)} />
                   </Button>
-                  <Button
-                    className="button"
-                    onClick={() => setUpdateId(todo.id)}
-                  >
-                    <GrUpdate />
+                  <Button>
+                    <GrUpdate onClick={() => setUpdateId(todo.id)} />
                   </Button>
                 </ButtonWrapper>
               </TodoHover>
             )}
           </TodoItem>
         ))}
+
         {checklists?.map((checklist) => (
           <TodoItem key={checklist.id}>
             {updateId === checklist.id ? (
@@ -371,19 +434,24 @@ const Todo = () => {
                   value={updatedTitle}
                   onChange={(e) => setUpdatedTitle(e.target.value)}
                 />
-                <Button
-                  className="button"
-                  onClick={() => updateTodo(checklist.id, true)}
-                >
-                  <FaRegSave />
+                <Button>
+                  <FaRegSave onClick={() => updateTodo(checklist.id, true)} />
                 </Button>
               </Update>
             ) : (
               <TodoHover>
-                <div>
-                  {checklist.title}
+                <CheckListData>
+                  <ChecklistButton>
+                    <ChecklistTitle>{checklist.title}</ChecklistTitle>
+                    <Button>
+                      <MdAdd
+                        onClick={() => setAddingItemToChecklist(checklist.id)}
+                      />
+                    </Button>
+                  </ChecklistButton>
+
                   {checklist.items?.map((item) => (
-                    <div key={item.id}>
+                    <NotesField key={item.id}>
                       <label>
                         <input
                           type="checkbox"
@@ -400,21 +468,20 @@ const Todo = () => {
                           <span>{item.title}</span>
                         )}
                       </label>
-                      <GrUpdate
-                        style={{
-                          width: '12px',
-                          height: '12px',
-                          margin: '0 10px',
-                        }}
-                        onClick={() =>
-                          handleIndividualChecklistItemUpdate(
-                            checklist.id,
-                            item.id
-                          )
-                        }
-                      />
-                    </div>
+
+                      <Button>
+                        <MdEdit
+                          onClick={() =>
+                            handleIndividualChecklistItemUpdate(
+                              checklist.id,
+                              item.id
+                            )
+                          }
+                        />
+                      </Button>
+                    </NotesField>
                   ))}
+
                   {addingItemToChecklist === checklist.id ? (
                     <div>
                       <InputFieldUpdate
@@ -422,49 +489,39 @@ const Todo = () => {
                         value={newItemTitle}
                         onChange={(e) => setNewItemTitle(e.target.value)}
                       />
-                      <Button
-                        className="button"
-                        onClick={() =>
-                          handleAddItem(checklist.id, newItemTitle)
-                        }
-                      >
-                        <FaRegSave />
+                      <Button>
+                        <FaRegSave
+                          onClick={() =>
+                            handleAddItem(checklist.id, newItemTitle)
+                          }
+                        />
                       </Button>
                     </div>
-                  ) : (
-                    <Button
-                      className="button"
-                      onClick={() => setAddingItemToChecklist(checklist.id)}
-                    >
-                      Add Item
-                    </Button>
-                  )}
-                </div>
+                  ) : null}
+                </CheckListData>
                 <ButtonWrapper>
-                  <Button
-                    className="button"
-                    onClick={() => deleteChecklist(checklist.id)}
-                  >
-                    <MdDelete />
-                  </Button>
-                  <Button
-                    className="button"
-                    onClick={() => {
-                      setUpdateId(checklist.id);
-                      setUpdatingItemId(null);
-                    }}
-                  >
-                    <GrUpdate />
-                  </Button>
-                  <div>
+                  <ButtonsdeleteWrapper>
+                    <Button onClick={() => deleteChecklist(checklist.id)}>
+                      <MdDelete />
+                    </Button>
+                    <Button>
+                      <MdEdit
+                        onClick={() => {
+                          setUpdateId(checklist.id);
+                          setUpdatingItemId(null);
+                        }}
+                      />
+                    </Button>
+                  </ButtonsdeleteWrapper>
+                  <CompletedTask>
                     Completed Tasks: {completedTasksCount[checklist.id] || 0}
-                  </div>
+                  </CompletedTask>
                 </ButtonWrapper>
               </TodoHover>
             )}
           </TodoItem>
         ))}
-      </ul>
+      </TodoListUl>
     </Container>
   );
 };
